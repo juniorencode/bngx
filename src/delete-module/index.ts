@@ -90,6 +90,8 @@ export function deleteModule(_options: any): Rule {
               deleteFile(`${filePath}/${subDir}`);
             });
           }
+
+          setTimeout(() => deleteEmptyDirectories(filePath, _context), 1000);
         } else {
           tree.delete(filePath);
         }
@@ -129,7 +131,6 @@ export function deleteModule(_options: any): Rule {
 
       const regex = new RegExp(`\\{[^}]*${dasherName}[^}]*\\},`, 'g');
       const _item = navigationContent.match(regex)?.[0] || null;
-      console.log(_item);
       if (_item && navigationContent.includes(_item)) {
         navigationContent = navigationContent.replace(_item, '');
       }
