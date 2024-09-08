@@ -78,7 +78,6 @@ export const ${className}Store = signalStore(
   withState<${className}State>(initialState),
   withMethods((state, ${camelName}Service = inject(${className}Service)) => ({
     doList(isLoading?: any) {
-
       if (isLoading && !state.entities().length) isLoading.set(true);
 
       ${camelName}Service.list().subscribe({
@@ -95,8 +94,8 @@ export const ${className}Store = signalStore(
   }))
 );`,
       service: `import { Injectable } from '@angular/core';
-import { environment } from '@/environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '@/environments/environment';
 import { Dto${className}Create } from '../domain/dtos/${dasherName}/Dto${className}Create';
 import { Dto${className}Edit } from '../domain/dtos/${dasherName}/Dto${className}Edit';
 import { DtoResponse${className} } from '../domain/dtos/${dasherName}/DtoResponse${className}';
@@ -152,21 +151,7 @@ describe('${className}Service', () => {
   });
 });`,
       mainCSS: '',
-      mainHTML: `<p-breadcrumb styleClass="px-0 pt-2 pb-1 bg-transparent" [model]="items">
-  <ng-template pTemplate="item" let-item>
-    <ng-container *ngIf="item.route; else elseBlock">
-      <a [routerLink]="item.route" class="p-menuitem-link">
-        <span [ngClass]="[item.icon ? item.icon : '', 'text-color']"></span>
-        <span class="text-primary font-semibold">{{ item.label }}</span>
-      </a>
-    </ng-container>
-    <ng-template #elseBlock>
-      <a [href]="item.url">
-        <span class="text-color">{{ item.label }}</span>
-      </a>
-    </ng-template>
-  </ng-template>
-</p-breadcrumb>
+      mainHTML: `<app-breadcrumb [items]="items"></app-breadcrumb>
 
 <div class="flex items-center justify-between w-full">
   <h1 class="text-4xl">${nameSpanish.toUpperCase()}</h1>
@@ -228,6 +213,12 @@ describe('${className}Service', () => {
         <td>
           {{ ${camelName}.name }}
         </td>
+        <td>
+          <div class="flex flex-col items-end">
+            <span>{{ getDateMMDDYY(${camelName}["created_at"]) }}</span
+            ><span>{{ getDateHHMMSS(${camelName}["created_at"]) }}</span>
+          </div>
+        </td>
         <td class="py-1 text-center">
           <p-button
             (click)="onOpenMenuOptionsRowTable($event, menu, ${camelName})"
@@ -244,13 +235,14 @@ describe('${className}Service', () => {
       <tr *ngFor="let i of [].constructor(10)">
         <td><p-skeleton width="2rem" height="1.5rem"></p-skeleton></td>
         <td><p-skeleton width="16rem" height="1.5rem"></p-skeleton></td>
+        <td><p-skeleton width="16rem" height="1.5rem"></p-skeleton></td>
         <td><p-skeleton width="5rem" height="1.5rem"></p-skeleton></td>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td class="text-center" colspan="3">No se encontraron registros.</td>
+        <td class="text-center" colspan="4">No se encontraron registros.</td>
       </tr>
     </ng-template>
   </p-table>
@@ -260,6 +252,7 @@ describe('${className}Service', () => {
 <app-${dasherName}-edit />
 `,
       mainTS: `import { CommonModule } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 import { Component, inject, signal, ViewChild } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
@@ -269,8 +262,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { convertHHMMSS, convertMMDDYY } from '@/helpers';
 import { DtoResponse${className} } from '@/app/domain/dtos/${dasherName}/DtoResponse${className}';
 import { ${className}Entity } from '@/app/domain/entities/${className}Entity';
 import { ${className}Service } from '@/app/services/${dasherName}.service';
@@ -338,7 +331,10 @@ export class ${className}Component {
     },
   ]);
 
+  constructor(private titleService: Title) {}
+
   ngOnInit() {
+    this.titleService.setTitle('${nameSpanish.toUpperCase()}');
     this.${camelName}Store.doList(this.isLoading);
   }
 
@@ -349,6 +345,16 @@ export class ${className}Component {
   onOpenMenuOptionsRowTable(event: MouseEvent, menu: any, row: any) {
     this.selectedRow.update(() => row);
     menu.toggle(event);
+  }
+
+  getDateMMDDYY(isoDate: string) {
+    if (!isoDate) return;
+    return convertMMDDYY(isoDate);
+  }
+
+  getDateHHMMSS(isoDate: string) {
+    if (!isoDate) return;
+    return convertHHMMSS(isoDate);
   }
 
   private onEdit(entity: DtoResponse${className} | null) {
@@ -492,8 +498,9 @@ import {
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { Dto${className}Create } from '@/app/domain/dtos/${dasherName}/Dto${className}Create';
 import { ${className}Service } from '@/app/services/${dasherName}.service';
 import { ${className}Store } from '@/stores/${dasherName}/${className}Store';
@@ -510,6 +517,7 @@ import { getErrorByKey, getErrosOnControls } from '@/helpers';
     InputTextModule,
     FloatLabelModule,
     ReactiveFormsModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './${dasherName}-create.component.html',
   styleUrl: './${dasherName}-create.component.css',
@@ -658,8 +666,9 @@ import {
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { Dto${className}Edit } from '@/app/domain/dtos/${dasherName}/Dto${className}Edit';
 import { DtoResponse${className} } from '@/app/domain/dtos/${dasherName}/DtoResponse${className}';
 import { ${className}Service } from '@/app/services/${dasherName}.service';
@@ -677,6 +686,7 @@ import { getErrorByKey, getErrosOnControls } from '@/helpers';
     InputTextModule,
     FloatLabelModule,
     ReactiveFormsModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './${dasherName}-edit.component.html',
   styleUrl: './${dasherName}-edit.component.css',
@@ -715,7 +725,7 @@ export class ${className}EditComponent {
     this.isOpen.set(true);
 
     if (entity) {
-      this.formData.patchValue({ ...entity });
+      this.formData.patchValue(entity);
     }
   }
 
