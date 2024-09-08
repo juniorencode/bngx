@@ -54,11 +54,11 @@ export function deleteModule(_options: any): Rule {
     const _parentFolder = '/src';
     const toDelete = [
       `${_parentFolder}/app/domain/entities/${className}Entity.ts`,
-      `${_parentFolder}/app/domain/dtos/${dasherName}`,
+      `${_parentFolder}/app/domain/dtos/${dasherName}/`,
       `${_parentFolder}/app/services/${dasherName}.service.ts`,
       `${_parentFolder}/app/services/${dasherName}.service.spec.ts`,
       `${_parentFolder}/stores/${dasherName}/${className}Store.ts`,
-      `${_parentFolder}/app/pages/system/${dasherName}`
+      `${_parentFolder}/app/pages/system/${dasherName}/`
     ];
 
     toDelete.forEach(filePath => {
