@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicCreateModule",
+  "title": "Crear Módulo",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Example field",
+      "x-prompt": "What's your name?: "
+    }
+  },
+  "required": ["name"]
+}
