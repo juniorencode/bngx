@@ -2,9 +2,14 @@
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
     "create-module": {
-      "description": "Builder System",
+      "description": "Crear Módulo",
       "factory": "./create-module/index#createModule",
       "schema": "./create-module/schema.json"
+    },
+    "delete-module": {
+      "description": "Borrar Módulo",
+      "factory": "./delete-module/index#deleteModule",
+      "schema": "./delete-module/schema.json"
     }
   }
 }
