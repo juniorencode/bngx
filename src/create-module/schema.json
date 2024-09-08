@@ -4,11 +4,16 @@
   "title": "Crear Módulo",
   "type": "object",
   "properties": {
-    "name": {
+    "nameSpanish": {
       "type": "string",
-      "description": "Example field",
-      "x-prompt": "What's your name?: "
+      "description": "Nombre de Módulo en Español",
+      "x-prompt": "Nombre del Módulo (español, plural) [Registro de Actividades]:"
+    },
+    "nameEnglish": {
+      "type": "string",
+      "description": "Nombre de Módulo",
+      "x-prompt": "Nombre del Módulo (inglés, singular) [activity log]:"
     }
   },
-  "required": ["name"]
+  "required": ["nameEnglish", "nameSpanish"]
 }
