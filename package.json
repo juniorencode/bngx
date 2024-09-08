@@ -1,6 +1,6 @@
 {
   "name": "bngx",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A blank schematics",
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -9,7 +9,7 @@
   "keywords": [
     "schematics"
   ],
-  "author": "",
+  "author": "Carlos Junior Ramos Vásquez",
   "license": "MIT",
   "schematics": "./src/collection.json",
   "dependencies": {
