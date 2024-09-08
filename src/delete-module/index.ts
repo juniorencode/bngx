@@ -109,17 +109,13 @@ export function deleteModule(_options: any): Rule {
       // IMPORTS
       const _import = `import { ${className}Component } from './${dasherName}/${dasherName}.component';`;
       if (routesContent.includes(_import)) {
-        routesContent = routesContent.replace('\n' + _import, '\n');
+        routesContent = routesContent.replace(_import, '');
       }
 
       // ROUTES
       const _routes = `{ path: '${dasherName}', component: ${className}Component },`;
       if (routesContent.includes(_routes)) {
-        routesContent = routesContent.replace(
-          `\n
-      ${_routes}`,
-          '\n'
-        );
+        routesContent = routesContent.replace(_routes, '');
       }
 
       tree.overwrite(path_route, routesContent);
@@ -131,14 +127,11 @@ export function deleteModule(_options: any): Rule {
     if (navigationBuffer) {
       let navigationContent = navigationBuffer.toString('utf-8');
 
-      const regex = new RegExp(`\\{[^}]*${dasherName}[^}]*\\}`, 'g');
+      const regex = new RegExp(`\\{[^}]*${dasherName}[^}]*\\},`, 'g');
       const _item = navigationContent.match(regex)?.[0] || null;
+      console.log(_item);
       if (_item && navigationContent.includes(_item)) {
-        navigationContent = navigationContent.replace(
-          `\n
-        ${_item}`,
-          '\n'
-        );
+        navigationContent = navigationContent.replace(_item, '');
       }
 
       tree.overwrite(path_navigation, navigationContent);

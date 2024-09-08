@@ -41,17 +41,6 @@ export function createModule(_options: any): Rule {
 
     const _parentFolder = '/src';
 
-    console.log({
-      nameSpanish,
-      nameEnglish,
-      name,
-      lowerName,
-      pluralName,
-      dasherName,
-      className,
-      camelName
-    });
-
     // content
     const contents = {
       entity: `export type ${className}Entity = {
