@@ -63,6 +63,7 @@ export function deleteModule(_options: any): Rule {
 
     toDelete.forEach(filePath => {
       const normalizedPath = normalize(filePath);
+      console.log(normalize);
       if (tree.exists(normalizedPath)) {
         const fileEntry = tree.get(normalizedPath);
         if (fileEntry) {
