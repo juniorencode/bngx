@@ -801,8 +801,9 @@ describe('${className}EditComponent', () => {
     const path_main = `${_parentFolder}/app/pages/system/${dasherName}`;
     const path_create = `${_parentFolder}/app/pages/system/${dasherName}/create`;
     const path_edit = `${_parentFolder}/app/pages/system/${dasherName}/edit`;
-    // const path_route = '/src/app/pages/system/system.routes.ts';
-    // const path_navigation = '/src/app/pages/system/layout/layout.component.ts';
+    const path_route = '/src/app/pages/system/system.routes.ts';
+    const path_navigation =
+      '/src/app/pages/system/system-layout/system-layout.component.ts';
 
     // ENTITY
     createFile(
@@ -914,62 +915,62 @@ describe('${className}EditComponent', () => {
       'Edit Component SPEC TS'
     );
 
-    // // UPDATE ROUTES FILE
-    // const routesBuffer = tree.read(path_route);
+    // UPDATE ROUTES FILE
+    const routesBuffer = tree.read(path_route);
 
-    // if (routesBuffer) {
-    //   let routesContent = routesBuffer.toString('utf-8');
+    if (routesBuffer) {
+      let routesContent = routesBuffer.toString('utf-8');
 
-    //   // IMPORTS
-    //   const _import = `import { ${className}Component } from './${dasherName}/${dasherName}.component';`;
-    //   if (
-    //     !routesContent.includes(_import) &&
-    //     routesContent.includes('// HERE IMPORTS')
-    //   ) {
-    //     routesContent = routesContent.replace(
-    //       '// HERE IMPORTS',
-    //       '// HERE IMPORTS\n' + _import
-    //     );
-    //   }
+      // IMPORTS
+      const _import = `import { ${className}Component } from './${dasherName}/${dasherName}.component';`;
+      if (
+        !routesContent.includes(_import) &&
+        routesContent.includes('// >> INI ROUTE IMPORTS')
+      ) {
+        routesContent = routesContent.replace(
+          '// >> INI ROUTE IMPORTS',
+          '// >> INI ROUTE IMPORTS\n' + _import
+        );
+      }
 
-    //   // ROUTES
-    //   const _routes = `{ path: '${dasherName}', component: ${className}Component },`;
-    //   if (
-    //     !routesContent.includes(_routes) &&
-    //     routesContent.includes('// HERE IMPORTS')
-    //   ) {
-    //     routesContent = routesContent.replace(
-    //       '// HERE ROUTES',
-    //       '// HERE ROUTES\n' + _routes
-    //     );
-    //   }
+      // ROUTES
+      const _routes = `{ path: '${dasherName}', component: ${className}Component },`;
+      if (
+        !routesContent.includes(_routes) &&
+        routesContent.includes('// >> INI ROUTE MODULES')
+      ) {
+        routesContent = routesContent.replace(
+          '// >> INI ROUTE MODULES',
+          '// >> INI ROUTE MODULES\n' + _routes
+        );
+      }
 
-    //   tree.overwrite(path_route, routesContent);
-    // }
+      tree.overwrite(path_route, routesContent);
+    }
 
-    // // UPDATE NAVIGATION
-    // const navigationBuffer = tree.read(path_navigation);
+    // UPDATE NAVIGATION
+    const navigationBuffer = tree.read(path_navigation);
 
-    // if (navigationBuffer) {
-    //   let navigationContent = navigationBuffer.toString('utf-8');
+    if (navigationBuffer) {
+      let navigationContent = navigationBuffer.toString('utf-8');
 
-    //   const _item = `{
-    //       label: '${nameSpanish}',
-    //       icon: 'pi pi-fw pi-list-check',
-    //       routerLink: ['/${dasherName}'],
-    //     },`;
-    //   if (
-    //     !navigationContent.includes(_item) &&
-    //     navigationContent.includes('HERE NAVIGATION')
-    //   ) {
-    //     navigationContent = navigationContent.replace(
-    //       'HERE NAVIGATION',
-    //       'HERE NAVIGATION\n' + _item
-    //     );
-    //   }
+      const _item = `{
+          label: '${nameSpanish}',
+          icon: 'pi pi-fw pi-list-check',
+          routerLink: ['/${dasherName}'],
+        },`;
+      if (
+        !navigationContent.includes(_item) &&
+        navigationContent.includes('// INI LAYOUT NAVIGATION')
+      ) {
+        navigationContent = navigationContent.replace(
+          '// INI LAYOUT NAVIGATION',
+          '// INI LAYOUT NAVIGATION\n' + _item
+        );
+      }
 
-    //   tree.overwrite(path_navigation, navigationContent);
-    // }
+      tree.overwrite(path_navigation, navigationContent);
+    }
 
     return tree;
   };
