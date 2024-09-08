@@ -7,12 +7,12 @@
     "nameSpanish": {
       "type": "string",
       "description": "Nombre de Módulo en Español",
-      "x-prompt": "Nombre del Módulo (español, plural) [Registro de Actividades]:"
+      "x-prompt": "Nombre (español, plural) [Registro de Actividades]:"
     },
     "nameEnglish": {
       "type": "string",
       "description": "Nombre de Módulo",
-      "x-prompt": "Nombre del Módulo (inglés, singular) [activity log]:"
+      "x-prompt": "Nombre (inglés, singular) [activity log]:"
     }
   },
   "required": ["nameEnglish", "nameSpanish"]
