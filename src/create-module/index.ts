@@ -919,6 +919,7 @@ describe('${className}EditComponent', () => {
     const routesBuffer = tree.read(path_route);
 
     if (routesBuffer) {
+      console.log('system.routes.ts');
       let routesContent = routesBuffer.toString('utf-8');
 
       // IMPORTS
@@ -941,7 +942,8 @@ describe('${className}EditComponent', () => {
       ) {
         routesContent = routesContent.replace(
           '// >> INI ROUTE MODULES',
-          '// >> INI ROUTE MODULES\n' + _routes
+          `// >> INI ROUTE MODULES
+      ${_routes}`
         );
       }
 
@@ -952,6 +954,7 @@ describe('${className}EditComponent', () => {
     const navigationBuffer = tree.read(path_navigation);
 
     if (navigationBuffer) {
+      console.log('system-layout.component.ts');
       let navigationContent = navigationBuffer.toString('utf-8');
 
       const _item = `{
@@ -961,11 +964,12 @@ describe('${className}EditComponent', () => {
         },`;
       if (
         !navigationContent.includes(_item) &&
-        navigationContent.includes('// INI LAYOUT NAVIGATION')
+        navigationContent.includes('// >> INI LAYOUT NAVIGATION')
       ) {
         navigationContent = navigationContent.replace(
-          '// INI LAYOUT NAVIGATION',
-          '// INI LAYOUT NAVIGATION\n' + _item
+          '// >> INI LAYOUT NAVIGATION',
+          `// >> INI LAYOUT NAVIGATION
+        ${_item}`
         );
       }
 

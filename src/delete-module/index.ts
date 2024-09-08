@@ -26,7 +26,6 @@ const deleteEmptyDirectories = (
   _context: SchematicContext
 ): void => {
   const normalizeDirPath = path.normalize(dirPath);
-  console.log(normalizeDirPath);
   if (fs.existsSync(normalizeDirPath)) {
     fs.readdirSync(normalizeDirPath).forEach(file => {
       const curPath = path.join(normalizeDirPath, file);
@@ -64,6 +63,9 @@ export function deleteModule(_options: any): Rule {
 
     // paths
     const _parentFolder = 'src';
+    const path_route = '/src/app/pages/system/system.routes.ts';
+    const path_navigation =
+      '/src/app/pages/system/system-layout/system-layout.component.ts';
     const toDelete = [
       `${_parentFolder}/app/domain/entities/${className}Entity.ts`,
       `${_parentFolder}/app/domain/dtos/${dasherName}`,
@@ -97,6 +99,50 @@ export function deleteModule(_options: any): Rule {
     };
 
     toDelete.forEach(file => deleteFile(file));
+
+    // UPDATE ROUTES FILE
+    const routesBuffer = tree.read(path_route);
+
+    if (routesBuffer) {
+      let routesContent = routesBuffer.toString('utf-8');
+
+      // IMPORTS
+      const _import = `import { ${className}Component } from './${dasherName}/${dasherName}.component';`;
+      if (routesContent.includes(_import)) {
+        routesContent = routesContent.replace('\n' + _import, '\n');
+      }
+
+      // ROUTES
+      const _routes = `{ path: '${dasherName}', component: ${className}Component },`;
+      if (routesContent.includes(_routes)) {
+        routesContent = routesContent.replace(
+          `\n
+      ${_routes}`,
+          '\n'
+        );
+      }
+
+      tree.overwrite(path_route, routesContent);
+    }
+
+    // UPDATE NAVIGATION
+    const navigationBuffer = tree.read(path_navigation);
+
+    if (navigationBuffer) {
+      let navigationContent = navigationBuffer.toString('utf-8');
+
+      const regex = new RegExp(`\\{[^}]*${dasherName}[^}]*\\}`, 'g');
+      const _item = navigationContent.match(regex)?.[0] || null;
+      if (_item && navigationContent.includes(_item)) {
+        navigationContent = navigationContent.replace(
+          `\n
+        ${_item}`,
+          '\n'
+        );
+      }
+
+      tree.overwrite(path_navigation, navigationContent);
+    }
 
     return tree;
   };
