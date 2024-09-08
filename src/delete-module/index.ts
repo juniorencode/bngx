@@ -1,5 +1,5 @@
 import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
-import { join, normalize } from 'path';
+import * as path from 'path';
 import * as fs from 'fs';
 
 const isAlphanumeric = (str: string) => {
@@ -21,17 +21,28 @@ const camelize = (
     .join(spaces ? ' ' : '');
 };
 
-const deleteDirectoryRecursively = (path: string) => {
-  if (fs.existsSync(path)) {
-    fs.readdirSync(path).forEach(file => {
-      const curPath = join(path, file);
+const deleteEmptyDirectories = (
+  dirPath: string,
+  _context: SchematicContext
+): void => {
+  const normalizeDirPath = path.normalize(dirPath);
+  console.log(normalizeDirPath);
+  if (fs.existsSync(normalizeDirPath)) {
+    fs.readdirSync(normalizeDirPath).forEach(file => {
+      const curPath = path.join(normalizeDirPath, file);
       if (fs.lstatSync(curPath).isDirectory()) {
-        deleteDirectoryRecursively(curPath);
-      } else {
-        fs.unlinkSync(curPath);
+        deleteEmptyDirectories(curPath, _context);
       }
     });
-    fs.rmdirSync(path);
+    try {
+      fs.rmdirSync(normalizeDirPath);
+    } catch (error) {
+      _context.logger.warn(
+        `No se puede eliminar el directorio ${dirPath}. Puede que no esté vacío o haya un error de permisos.`
+      );
+    }
+  } else {
+    _context.logger.warn(`El directorio ${dirPath} no existe.`);
   }
 };
 
@@ -51,33 +62,41 @@ export function deleteModule(_options: any): Rule {
     const dasherName = lowerName.replace(' ', '-');
     const className = camelize(lowerName, false);
 
-    const _parentFolder = '/src';
+    // paths
+    const _parentFolder = 'src';
     const toDelete = [
       `${_parentFolder}/app/domain/entities/${className}Entity.ts`,
-      `${_parentFolder}/app/domain/dtos/${dasherName}/`,
+      `${_parentFolder}/app/domain/dtos/${dasherName}`,
       `${_parentFolder}/app/services/${dasherName}.service.ts`,
       `${_parentFolder}/app/services/${dasherName}.service.spec.ts`,
-      `${_parentFolder}/stores/${dasherName}/${className}Store.ts`,
-      `${_parentFolder}/app/pages/system/${dasherName}/`
+      `${_parentFolder}/stores/${dasherName}`,
+      `${_parentFolder}/app/pages/system/${dasherName}`
     ];
 
-    toDelete.forEach(filePath => {
-      const normalizedPath = normalize(filePath);
-      console.log(normalize);
-      if (tree.exists(normalizedPath)) {
-        const fileEntry = tree.get(normalizedPath);
-        if (fileEntry) {
-          if (fileEntry.path.endsWith('/')) {
-            const dirPath = join(tree.root.path, normalizedPath);
-            deleteDirectoryRecursively(dirPath);
+    const deleteFile = (filePath: string) => {
+      try {
+        if (!tree.exists(filePath)) {
+          const dirEntry = tree.getDir(filePath);
+
+          if (!dirEntry.subdirs.length && !dirEntry.subfiles.length) {
+            _context.logger.warn(`El directorio ${filePath} no existe.`);
           } else {
-            tree.delete(normalizedPath);
+            dirEntry.subfiles.forEach(subFile => {
+              deleteFile(`${filePath}/${subFile}`);
+            });
+            dirEntry.subdirs.forEach(subDir => {
+              deleteFile(`${filePath}/${subDir}`);
+            });
           }
+        } else {
+          tree.delete(filePath);
         }
-      } else {
-        _context.logger.warn(`El archivo o directorio ${filePath} no existe.`);
+      } catch (error) {
+        _context.logger.warn(`No se puede eliminar ${filePath}`, error);
       }
-    });
+    };
+
+    toDelete.forEach(file => deleteFile(file));
 
     return tree;
   };
