@@ -801,8 +801,8 @@ describe('${className}EditComponent', () => {
     const path_main = `${_parentFolder}/app/pages/system/${dasherName}`;
     const path_create = `${_parentFolder}/app/pages/system/${dasherName}/create`;
     const path_edit = `${_parentFolder}/app/pages/system/${dasherName}/edit`;
-    const path_route = '/src/app/pages/system/system.routes.ts';
-    const path_navigation = '/src/app/pages/system/layout/layout.component.ts';
+    // const path_route = '/src/app/pages/system/system.routes.ts';
+    // const path_navigation = '/src/app/pages/system/layout/layout.component.ts';
 
     // ENTITY
     createFile(
